@@ -1,63 +1,125 @@
-const express = require("express")
-const bcrypt = require('bcrypt'); // Correct import of bcrypt
-const mongoose = require("mongoose")
-const cors = require("cors")
-const blogModel = require("./Model/model")
-const app = express()
+const express = require("express");
+const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const UserModel = require("./Model/model"); // ✅ Ensure correct import
 
-app.use(express.json())
-app.use(cors())
+const app = express();
+app.use(express.json());
+app.use(cors());
 
 mongoose.connect("mongodb://127.0.0.1:27017/maps")
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.log("Error connecting to MongoDB:", err));
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((err) => console.error("❌ Error connecting to MongoDB:", err));
 
-app.post("/login", (req, res) => {
+// 🟢 User Login
+app.post("/login", async (req, res) => {
     const { email, password } = req.body;
+    console.log(`Login attempt: ${email}`);
 
-    blogModel.findOne({ Email: email })
-        .then(user => {
-            if (user) {
-                // Compare hashed password (assuming password is hashed)
-                bcrypt.compare(password, user.Password, (err, isMatch) => {
-                    if (err) {
-                        return res.status(500).json({ message: "Error during password comparison" });
-                    }
-                    if (!isMatch) {
-                        console.log("Password is correct, match found.");
-                        res.status(200).json({ message: "Login successful" });
-                    } else {
-                        console.log(isMatch)
-                        console.log(`${password} and correct ${user.Password}`)
-                        console.log("Incorrect password.");
-                        res.status(401).json({ message: "Incorrect password" });
-                    }
-                });
-            } else {
-                console.log("No such entry found.");
-                res.status(404).json({ message: "No user found, please register" });
-            }
-        })
-        .catch(err => {
-            console.error("Error during login:", err);
-            res.status(500).json({ message: "Server error during login", error: err });
+    try {
+        const user = await UserModel.findOne({ Email: email });
+
+        if (!user) {
+            console.log("🚫 No such user found.");
+            return res.status(404).json({ message: "User not found. Please register." });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.Password);
+        if (!isMatch) {
+            console.log("❌ Incorrect password.");
+            return res.status(401).json({ message: "Incorrect password" });
+        }
+
+        console.log("✅ Login successful.");
+        const { Password, ...safeUser } = user._doc; // Exclude password from response
+        res.status(200).json({ message: "Login successful", user: safeUser });
+
+    } catch (err) {
+        console.error("❌ Error during login:", err);
+        res.status(500).json({ message: "Server error during login", error: err.message });
+    }
+});
+
+// 🟢 Save Travel History
+app.post("/save", async (req, res) => {
+    const { email, start, destination, route } = req.body;
+    console.log(`Saving travel history for: ${email}`);
+
+    try {
+        const user = await UserModel.findOne({ Email: email });
+
+        if (!user) {
+            console.log("🚫 No such user found.");
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        if (!start || !destination) {
+            return res.status(400).json({ message: "Start and Destination are required." });
+        }
+
+        // ✅ Save travel record
+        user.TravelHistory.push({ Start: start, Destination: destination, Route: route });
+        await user.save();
+
+        console.log("✅ Travel history saved.");
+        res.status(200).json({ message: "Travel history updated successfully." });
+
+    } catch (err) {
+        console.error("❌ Error saving travel history:", err);
+        res.status(500).json({ message: "Server error while saving travel history", error: err.message });
+    }
+});
+
+// 🟢 User Registration
+app.post("/register", async (req, res) => {
+    const { Start, Destination, Email, Password } = req.body;
+
+    try {
+        // Hash password before storing
+        const hashedPassword = await bcrypt.hash(Password, 10);
+        const newUser = new UserModel({
+            Email,
+            Password: hashedPassword,
+            TravelHistory: [{ Start, Destination, Date: new Date() }]
         });
-}); 
 
-app.post("/register", (req, res)=>{
-    blogModel.create(req.body)
-        .then(blog => {
-            // Send the blog data as a response if successful
-            res.status(201).json(blog);
-        })
-        .catch(err => {
-            // Log and send the error message back to the client
-            console.log(`Error at server POST: ${err}`);
-            res.status(500).json({ message: "Error saving data", error: err });
-        });
-})
+        await newUser.save();
+        console.log("✅ User registered successfully.");
+        res.status(201).json({ message: "User registered successfully", user: newUser });
 
-const port = 3001
-app.listen( port, ()=>{
-    console.log(`App is running of port ${port}`);
-}) 
+    } catch (err) {
+        console.error("❌ Error registering user:", err);
+        res.status(500).json({ message: "Error saving data", error: err });
+    }
+});
+
+// 🟢 Save Route with Full GeoJSON
+app.post("/saveRoute", async (req, res) => {
+    const { email, start, destination, route } = req.body;
+
+    if (!email || !start || !destination || !route) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    try {
+        const user = await UserModel.findOne({ Email: email });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.TravelHistory.push({ Start: start, Destination: destination, Route: route });
+
+        await user.save();
+        res.status(200).json({ message: "Route saved successfully", travelHistory: user.TravelHistory });
+    } catch (err) {
+        console.error("Error saving route:", err);
+        res.status(500).json({ message: "Server error", error: err });
+    }
+});
+
+const port = 3001;
+app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+});
