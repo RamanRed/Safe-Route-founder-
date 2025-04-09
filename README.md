@@ -15,7 +15,7 @@ This project is actively under development.
 
 ---
 
-## 🧩 Tech Stack
+## 🧹 Tech Stack
 
 - React.js
 - Mapbox GL JS
@@ -26,7 +26,7 @@ This project is actively under development.
 
 ---
 
-## 📦 Installation & Setup
+## 🛆 Installation & Setup
 
 ### 1. **Clone the repository**
 ```bash
@@ -58,12 +58,14 @@ npm run dev
 ## 📷 Screenshots
 
 ### 🌐 Map View with Crime Avoidance Routes
-![Map Route Example](https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225201.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225343.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225431.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20231132.png)
+| Map View 1 | Map View 2 |
+|------------|------------|
+| ![Map Route 1](https://github.com/RamanRed/Safe-Route-founder-/raw/master/Screenshot%202025-04-03%20225201.png) | ![Map Route 2](https://github.com/RamanRed/Safe-Route-founder-/raw/master/Screenshot%202025-04-03%20225343.png) |
 
 ### ⚡ Emergency SOS Panel
-![Emergency Panel](screenshots/emergency-panel.png)
-
-> More coming soon as development progresses!
+| Map View 3 | Map View 4 |
+|------------|------------|
+| ![Map Route 3](https://github.com/RamanRed/Safe-Route-founder-/raw/master/Screenshot%202025-04-03%20225431.png) | ![Map Route 4](https://github.com/RamanRed/Safe-Route-founder-/raw/master/Screenshot%202025-04-03%20231132.png) |
 
 ---
 
@@ -74,4 +76,3 @@ Open to contributions! Feel free to fork the repo, suggest improvements or bugfi
 
 ## ✨ Author
 Made with passion by [Your Name](https://github.com/yourusername) ❤
-
