@@ -58,7 +58,7 @@ npm run dev
 ## 📷 Screenshots
 
 ### 🌐 Map View with Crime Avoidance Routes
-![Map Route Example](https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225201.png)
+![Map Route Example](https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225201.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225343.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20225431.png)(https://github.com/RamanRed/Safe-Route-founder-/blob/master/Screenshot%202025-04-03%20231132.png)
 
 ### ⚡ Emergency SOS Panel
 ![Emergency Panel](screenshots/emergency-panel.png)
