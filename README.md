@@ -75,4 +75,4 @@ Open to contributions! Feel free to fork the repo, suggest improvements or bugfi
 ---
 
 ## ✨ Author
-Made with passion by [Your Name](https://github.com/yourusername) ❤
+Made with passion by [Raman Randive](https://github.com/RamanRed) ❤
